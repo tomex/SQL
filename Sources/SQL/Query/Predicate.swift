@@ -93,6 +93,22 @@ extension ParameterConvertible {
     }
 }
 
+// Like
+
+extension ParameterConvertible {
+  public func like(_ values: [ValueConvertible?]) -> Predicate {
+    return like(values.map { $0?.sqlValue })
+  }
+  public func like(_ values: ValueConvertible?...) -> Predicate {
+    return like(values)
+  }
+  public func like(_ values: [Value?]) -> Predicate {
+    return .expression(left: self.sqlParameter, operator: .like, right: .values(values))
+  }
+  public func like(_ values: Value?...) -> Predicate {
+    return like(values)
+  }
+}
 
 // MARK: Compound predicate
 
