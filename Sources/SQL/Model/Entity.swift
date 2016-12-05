@@ -25,18 +25,28 @@ public extension EntityProtocol where Model.Field.RawValue == String {
     }
 
     public static func fetchAll<Connection: ConnectionProtocol> (connection: Connection) throws -> [PersistedEntity<Model>] where Connection.Result.Iterator.Element: RowProtocol {
-        return try fetch(where: nil, order: nil, limit: nil, offset: nil, connection: connection)
+        return try fetch(fields: nil, where: nil, group: nil, order: nil, limit: nil, offset: nil, connection: connection)
     }
 
     public static func first<Connection: ConnectionProtocol> (where predicate: Predicate? = nil, connection: Connection) throws -> PersistedEntity<Model>? where Connection.Result.Iterator.Element: RowProtocol {
-        return try fetch(where: predicate, order: nil, limit: 1, offset: 0, connection: connection).first
+        return try fetch(fields: nil, where: predicate, group: nil, order: nil, limit: 1, offset: 0, connection: connection).first
     }
 
-    public static func fetch<Connection: ConnectionProtocol> (where predicate: Predicate? = nil, order: Order? = nil, limit: Int? = nil, offset: Int? = nil, connection: Connection) throws -> [PersistedEntity<Model>] where Connection.Result.Iterator.Element: RowProtocol {
-        var select = Model.select
+    public static func fetch<Connection: ConnectionProtocol> (fields: [Model.Field]? = nil,where predicate: Predicate? = nil, group: [Group]? = nil, order: [Order]? = nil, limit: Int? = nil, offset: Int? = nil, connection: Connection) throws -> [PersistedEntity<Model>] where Connection.Result.Iterator.Element: RowProtocol {
+        var select:Select
+
+        if let fields = fields{
+          select = Model.select(fields)
+        }else{
+          select = Model.select
+        }
 
         if let predicate = predicate {
             select.filter(predicate)
+        }
+
+        if let group = group {
+            select.group(by: group)
         }
 
         if let order = order {

@@ -11,6 +11,7 @@ public struct Select: PredicatedQuery {
     }
 
     public var order: [Order] = []
+    public var group: [Group] = []
 
     private(set) public var fields: [Component]
     public let from: [Component]
@@ -57,6 +58,26 @@ public struct Select: PredicatedQuery {
 
     public func ordered(by value: Order...) -> Select {
         return ordered(by: value)
+    }
+
+    // MARK: - Group
+
+    public mutating func group(by value: [Group]) {
+        group += value
+    }
+
+    public mutating func group(by value: Group...) {
+        group(by: value)
+    }
+
+    public func grouped(by value: [Group]) -> Select {
+        var new = self
+        new.group(by: value)
+        return new
+    }
+
+    public func grouped(by value: Group...) -> Select {
+        return grouped(by: value)
     }
 
     public mutating func limit(to value: Int) {

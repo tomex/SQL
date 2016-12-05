@@ -19,6 +19,10 @@ public protocol TableProtocol {
 
 public extension TableProtocol where Self.Field.RawValue == String {
 
+    public static func select(_ fields: [Field]) -> Select {
+        return Select(fields.map { $0.qualifiedField }, from: [Field.tableName])
+    }
+
     public static func select(_ fields: Field...) -> Select {
         return Select(fields.map { $0.qualifiedField }, from: [Field.tableName])
     }
